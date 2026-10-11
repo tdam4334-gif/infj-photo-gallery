@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>心隅 · INFJ 照片收藏馆</title>
+  <meta name="description" content="一个给 INFJ 的安静照片角落——收集那些让你心动、停顿、想独自多看一会儿的画面。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#gallery">跳到照片墙</a>
+
+  <header class="site-header" id="top">
+    <a class="brand" href="#top">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-text">心隅</span>
+    </a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="#gallery">收藏馆</a>
+      <a href="#upload">留下一帧</a>
+      <a href="#about">关于这里</a>
+    </nav>
+    <button class="nav-upload" type="button" data-open-upload>
+      上传照片
+    </button>
+  </header>
+
+  <main>
+    <section class="hero" aria-label="首页">
+      <div class="hero-media" aria-hidden="true">
+        <img src="assets/photo-forest.jpg" alt="" />
+        <div class="hero-veil"></div>
+      </div>
+      <div class="hero-content">
+        <p class="hero-kicker">INFJ 照片收藏</p>
+        <h1 class="hero-title">
+          把心动的<br />那一帧，<br /><em>留在这里</em>
+        </h1>
+        <p class="hero-lead">
+          这里不追求热闹。只收集那些让你停下来、
+          想独自多看一会儿的画面——微光、雨声、远山，或某个说不出口的瞬间。
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#gallery">走进收藏馆</a>
+          <button class="btn btn-ghost" type="button" data-open-upload>分享你的一帧</button>
+        </div>
+      </div>
+      <a class="hero-scroll" href="#manifesto" aria-label="继续向下">
+        <span>慢慢往下</span>
+      </a>
+    </section>
+
+    <section class="manifesto" id="manifesto" aria-label="引言">
+      <blockquote>
+        <p>我们常把最真的感受藏在一张照片里。<br />不解释，不表演——只是承认：这一刻，被我看见了。</p>
+      </blockquote>
+    </section>
+
+    <section class="gallery-section" id="gallery">
+      <div class="section-head">
+        <div>
+          <p class="section-note">收藏馆</p>
+          <h2>最近被留下的画面</h2>
+        </div>
+        <p class="section-desc">
+          按心情筛选。没有排行榜，也没有点赞——只有你愿意与人分享的那一帧。
+        </p>
+      </div>
+
+      <div class="mood-bar" role="toolbar" aria-label="按心情筛选">
+        <button class="mood-chip is-active" type="button" data-mood="all">全部</button>
+        <button class="mood-chip" type="button" data-mood="quiet">安静</button>
+        <button class="mood-chip" type="button" data-mood="light">微光</button>
+        <button class="mood-chip" type="button" data-mood="rain">雨天</button>
+        <button class="mood-chip" type="button" data-mood="night">夜色</button>
+        <button class="mood-chip" type="button" data-mood="nature">自然</button>
+        <button class="mood-chip" type="button" data-mood="alone">独处</button>
+        <button class="mood-chip" type="button" data-mood="soft">温柔</button>
+      </div>
+
+      <div class="gallery-wall" id="gallery-wall" aria-live="polite"></div>
+      <p class="gallery-empty" id="gallery-empty" hidden>
+        这个心情下还没有照片。换一个筛选，或者留下你的第一帧。
+      </p>
+    </section>
+
+    <section class="upload-section" id="upload">
+      <div class="upload-panel">
+        <div class="upload-copy">
+          <p class="section-note">留下一帧</p>
+          <h2>把你的照片，放进这面墙</h2>
+          <p>
+            上传后会进入共享收藏馆，其他人打开也能看到。写一句心情或场景，
+            让这一帧不只停在自己的相册里。
+          </p>
+          <ul class="upload-tips">
+            <li>支持 JPG、PNG、WebP</li>
+            <li>建议单张不超过 8MB</li>
+            <li>写入共享存储，访客可见</li>
+          </ul>
+          <button class="btn btn-primary" type="button" data-open-upload>选择照片</button>
+        </div>
+        <figure class="upload-visual">
+          <img src="assets/photo-book.jpg" alt="窗边翻开的书与茶杯" />
+          <figcaption>「安静」有时比任何滤镜都更耐看。</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="about-section" id="about">
+      <div class="about-grid">
+        <div>
+          <p class="section-note">关于这里</p>
+          <h2>一个给内倾直觉者的角落</h2>
+        </div>
+        <div class="about-body">
+          <p>
+            INFJ 常被形容为「安静的理想主义者」。我们不一定说得清楚自己的感受，
+            但一张照片往往能替我们说出口。这个站点因此很慢、很静：
+            少交互噪音，多留白，让画面自己说话。
+          </p>
+          <p>
+            它不是社交广场，更像一本可以共同翻阅的相册。
+            你可以只看，也可以放一张进来。不必完美构图——真实的第一反应更重要。
+          </p>
+          <div class="about-note">
+            <strong>关于「所有 INFJ 共同上传」</strong>
+            <p>
+              照片保存在云端共享存储，固定网址
+              <a href="https://infj-gallery.infj-gallery.workers.dev">infj-gallery.infj-gallery.workers.dev</a>
+              上所有人打开都能看到最新上传，不依赖个人电脑开机。
+              公开上传无人工审核，请自觉不传隐私、敏感或侵权内容。
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <p class="footer-brand">心隅</p>
+        <p class="footer-tag">INFJ 照片收藏馆 · 给心动的那一帧一个位置</p>
+      </div>
+      <p class="footer-meta">共享照片收藏馆 · 上传对所有访客可见</p>
+    </div>
+  </footer>
+
+  <!-- Upload dialog -->
+  <div class="dialog-root" id="upload-dialog" hidden>
+    <div class="dialog-backdrop" data-close-upload></div>
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="upload-title">
+      <button class="dialog-close" type="button" data-close-upload aria-label="关闭">×</button>
+      <h2 id="upload-title">留下你的一帧</h2>
+      <p class="dialog-lead">选一张照片，写一句你当时的心情。提交后所有人都能看到。</p>
+
+      <form id="upload-form" novalidate>
+        <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="选择或拖入照片">
+          <input type="file" id="photo-input" name="photo" accept="image/jpeg,image/png,image/webp" hidden />
+          <div class="dropzone-inner" id="dropzone-empty">
+            <p class="dropzone-title">拖入照片，或点击选择</p>
+            <p class="dropzone-hint">JPG、PNG、WebP，建议 8MB 以内</p>
+          </div>
+          <img id="photo-preview" alt="预览" hidden />
+          <button type="button" class="dropzone-change" id="photo-change" hidden>换一张</button>
+        </div>
+
+        <label class="field">
+          <span>一句话</span>
+          <input type="text" id="caption-input" name="caption" maxlength="80" placeholder="例如：窗边的光，像有人轻轻说没事的" />
+        </label>
+
+        <fieldset class="field mood-field">
+          <legend>心情</legend>
+          <div class="mood-options">
+            <label><input type="radio" name="mood" value="quiet" checked /><span>安静</span></label>
+            <label><input type="radio" name="mood" value="light" /><span>微光</span></label>
+            <label><input type="radio" name="mood" value="rain" /><span>雨天</span></label>
+            <label><input type="radio" name="mood" value="night" /><span>夜色</span></label>
+            <label><input type="radio" name="mood" value="nature" /><span>自然</span></label>
+            <label><input type="radio" name="mood" value="alone" /><span>独处</span></label>
+            <label><input type="radio" name="mood" value="soft" /><span>温柔</span></label>
+          </div>
+        </fieldset>
+
+        <label class="field">
+          <span>署名（可选）</span>
+          <input type="text" id="name-input" name="name" maxlength="20" placeholder="匿名 INFJ" />
+        </label>
+
+        <p class="form-error" id="form-error" role="alert" hidden></p>
+
+        <div class="dialog-actions">
+          <button class="btn btn-ghost" type="button" data-close-upload>先不了</button>
+          <button class="btn btn-primary" type="submit">放进收藏馆</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" hidden>
+    <button class="lightbox-close" type="button" data-close-lightbox aria-label="关闭">×</button>
+    <figure class="lightbox-figure">
+      <img id="lightbox-image" alt="" />
+      <figcaption>
+        <p id="lightbox-caption"></p>
+        <p id="lightbox-meta"></p>
+      </figcaption>
+    </figure>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

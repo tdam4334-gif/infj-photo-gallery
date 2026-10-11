@@ -1,0 +1,19 @@
+name = "infj-gallery"
+main = "src/index.js"
+compatibility_date = "2026-01-01"
+workers_dev = true
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+
+# Workers KV 共享存储（已创建）
+[[kv_namespaces]]
+binding = "PHOTOS"
+id = "d048141ca5664e98a839bab6b6bcaaa0"
+
+# 若以后开通 R2，可改回对象存储（更适合大图）
+# [[r2_buckets]]
+# binding = "PHOTOS"
+# bucket_name = "infj-photos"

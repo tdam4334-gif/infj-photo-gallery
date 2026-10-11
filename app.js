@@ -85,6 +85,20 @@ const lightboxCaption = document.getElementById("lightbox-caption");
 const lightboxMeta = document.getElementById("lightbox-meta");
 const toast = document.getElementById("toast");
 
+// 同域用相对路径；GitHub Pages 等静态域固定打到云端共享 API
+const API_BASE = (() => {
+  if (typeof location === "undefined") return "";
+  const host = location.hostname || "";
+  if (host.endsWith(".workers.dev") || host === "localhost" || host === "127.0.0.1") {
+    return "";
+  }
+  return "https://infj-gallery.infj-gallery.workers.dev";
+})();
+
+function apiUrl(path) {
+  return `${API_BASE}${path}`;
+}
+
 let activeMood = "all";
 let pendingFile = null;
 let pendingPhotoDataUrl = "";
@@ -103,13 +117,14 @@ function escapeHtml(value) {
 
 function resolveSrc(src) {
   if (!src) return "";
-  if (/^(https?:|data:|assets\/|\.\/)/.test(src)) return src;
+  if (/^(https?:|data:)/.test(src)) return src;
+  if (src.startsWith("/")) return apiUrl(src);
   return src;
 }
 
 async function loadSharedPhotos() {
   try {
-    const res = await fetch("api/photos", { headers: { Accept: "application/json" } });
+    const res = await fetch(apiUrl("/api/photos"), { headers: { Accept: "application/json" } });
     if (!res.ok) throw new Error("bad status");
     const data = await res.json();
     sharedPhotos = Array.isArray(data.photos) ? data.photos : [];
@@ -297,7 +312,7 @@ async function submitPhoto(event) {
   submitBtn.textContent = "正在放进收藏馆…";
 
   try {
-    const res = await fetch("api/upload", {
+    const res = await fetch(apiUrl("/api/upload"), {
       method: "POST",
       body: form,
     });

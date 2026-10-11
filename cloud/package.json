@@ -1,0 +1,14 @@
+{
+  "name": "infj-gallery-worker",
+  "private": true,
+  "version": "1.0.0",
+  "description": "INFJ photo gallery API + static host on Cloudflare Workers",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "create-bucket": "wrangler r2 bucket create infj-photos"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}
