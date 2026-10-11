@@ -85,14 +85,13 @@ const lightboxCaption = document.getElementById("lightbox-caption");
 const lightboxMeta = document.getElementById("lightbox-meta");
 const toast = document.getElementById("toast");
 
-// 同域用相对路径；GitHub Pages 等静态域固定打到云端共享 API
+// 同域默认用相对路径；GitHub Pages 可用 <meta name="api-base" content="https://...">
 const API_BASE = (() => {
-  if (typeof location === "undefined") return "";
-  const host = location.hostname || "";
-  if (host.endsWith(".workers.dev") || host === "localhost" || host === "127.0.0.1") {
-    return "";
-  }
-  return "https://infj-gallery.infj-gallery.workers.dev";
+  if (typeof document === "undefined") return "";
+  const meta = document.querySelector('meta[name="api-base"]');
+  const fromMeta = (meta && meta.getAttribute("content")) || "";
+  if (fromMeta.trim()) return fromMeta.trim().replace(/\/$/, "");
+  return "";
 })();
 
 function apiUrl(path) {
