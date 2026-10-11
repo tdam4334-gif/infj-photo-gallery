@@ -93,13 +93,13 @@
           <p class="section-note">留下一帧</p>
           <h2>把你的照片，放进这面墙</h2>
           <p>
-            上传后会保存在你当前的浏览器里，刷新仍在。写一句心情或场景，
-            方便日后自己回来时，还能记起当时为什么停住。
+            上传后会进入共享收藏馆，其他人打开也能看到。写一句心情或场景，
+            让这一帧不只停在自己的相册里。
           </p>
           <ul class="upload-tips">
             <li>支持 JPG、PNG、WebP</li>
             <li>建议单张不超过 8MB</li>
-            <li>本地保存，不会上传到服务器</li>
+            <li>写入共享存储，访客可见</li>
           </ul>
           <button class="btn btn-primary" type="button" data-open-upload>选择照片</button>
         </div>
@@ -129,9 +129,9 @@
           <div class="about-note">
             <strong>关于「所有 INFJ 共同上传」</strong>
             <p>
-              当前版本是纯前端演示：照片保存在本机浏览器的本地存储中，
-              只有你这台设备能看到自己的上传。若要做成真正多人共享的收藏馆，
-              还需要后端存储、审核与隐私策略——我们没有假装已经做到那一步。
+              现在通过共享服务保存上传：大家提交的照片会汇总到同一面墙，彼此都能看到。
+              注意：公开上传没有人工审核，请自觉不传隐私、敏感或侵权内容。
+              服务依赖当前运行的共享节点；若节点下线，上传与他人照片会暂时不可用。
             </p>
           </div>
         </div>
@@ -145,7 +145,7 @@
         <p class="footer-brand">心隅</p>
         <p class="footer-tag">INFJ 照片收藏馆 · 给心动的那一帧一个位置</p>
       </div>
-      <p class="footer-meta">本地演示站点，照片仅存于你的浏览器</p>
+      <p class="footer-meta">共享照片收藏馆 · 上传对所有访客可见</p>
     </div>
   </footer>
 
@@ -155,7 +155,7 @@
     <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="upload-title">
       <button class="dialog-close" type="button" data-close-upload aria-label="关闭">×</button>
       <h2 id="upload-title">留下你的一帧</h2>
-      <p class="dialog-lead">选一张照片，写一句你当时的心情。</p>
+      <p class="dialog-lead">选一张照片，写一句你当时的心情。提交后所有人都能看到。</p>
 
       <form id="upload-form" novalidate>
         <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="选择或拖入照片">

@@ -1,4 +1,4 @@
-/* 心隅 · 交互层：心情筛选、上传、灯箱、本地保存 */
+/* 心隅 · 交互层：共享相册、心情筛选、上传、灯箱 */
 
 const MOOD_LABELS = {
   quiet: "安静",
@@ -17,7 +17,6 @@ const SEED_PHOTOS = [
     caption: "窗边的书页停在那一句，茶还温着。",
     mood: "quiet",
     author: "编辑部",
-    seed: true,
   },
   {
     id: "seed-forest",
@@ -25,7 +24,6 @@ const SEED_PHOTOS = [
     caption: "雾把路收窄了，反而更想往前走。",
     mood: "nature",
     author: "编辑部",
-    seed: true,
   },
   {
     id: "seed-rain",
@@ -33,7 +31,6 @@ const SEED_PHOTOS = [
     caption: "雨点把城市揉软了，像隔着一层旧毛衣。",
     mood: "rain",
     author: "编辑部",
-    seed: true,
   },
   {
     id: "seed-chair",
@@ -41,7 +38,6 @@ const SEED_PHOTOS = [
     caption: "空椅子并不空——它只是在等一个愿意发呆的人。",
     mood: "alone",
     author: "编辑部",
-    seed: true,
   },
   {
     id: "seed-stars",
@@ -49,7 +45,6 @@ const SEED_PHOTOS = [
     caption: "远处那盏灯比星星更让人心安。",
     mood: "night",
     author: "编辑部",
-    seed: true,
   },
   {
     id: "seed-ocean",
@@ -57,7 +52,6 @@ const SEED_PHOTOS = [
     caption: "海把话说得很轻，所以要凑近听。",
     mood: "quiet",
     author: "编辑部",
-    seed: true,
   },
   {
     id: "seed-flower",
@@ -65,7 +59,6 @@ const SEED_PHOTOS = [
     caption: "不是所有温柔都需要被大声确认。",
     mood: "soft",
     author: "编辑部",
-    seed: true,
   },
   {
     id: "seed-moon",
@@ -73,11 +66,8 @@ const SEED_PHOTOS = [
     caption: "月光从帘子缝里进来，像不请自来的安慰。",
     mood: "light",
     author: "编辑部",
-    seed: true,
   },
 ];
-
-const STORAGE_KEY = "xinyu-infj-photos-v1";
 
 const galleryWall = document.getElementById("gallery-wall");
 const galleryEmpty = document.getElementById("gallery-empty");
@@ -96,33 +86,11 @@ const lightboxMeta = document.getElementById("lightbox-meta");
 const toast = document.getElementById("toast");
 
 let activeMood = "all";
+let pendingFile = null;
 let pendingPhotoDataUrl = "";
+let sharedPhotos = [];
 let lastFocus = null;
-
-function loadUserPhotos() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-}
-
-function saveUserPhotos(photos) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(photos));
-    return true;
-  } catch {
-    showToast("本地存储空间不足，照片未能保存。可以换一张更小的图。");
-    return false;
-  }
-}
-
-function allPhotos() {
-  return [...loadUserPhotos(), ...SEED_PHOTOS];
-}
+let apiOnline = false;
 
 function escapeHtml(value) {
   return String(value)
@@ -131,6 +99,30 @@ function escapeHtml(value) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;");
+}
+
+function resolveSrc(src) {
+  if (!src) return "";
+  if (/^(https?:|data:|assets\/|\.\/)/.test(src)) return src;
+  return src;
+}
+
+async function loadSharedPhotos() {
+  try {
+    const res = await fetch("api/photos", { headers: { Accept: "application/json" } });
+    if (!res.ok) throw new Error("bad status");
+    const data = await res.json();
+    sharedPhotos = Array.isArray(data.photos) ? data.photos : [];
+    apiOnline = true;
+  } catch {
+    apiOnline = false;
+    sharedPhotos = [];
+    showToast("共享服务未连接，暂时只能浏览示例照片。");
+  }
+}
+
+function allPhotos() {
+  return [...sharedPhotos, ...SEED_PHOTOS];
 }
 
 function renderGallery() {
@@ -153,7 +145,7 @@ function renderGallery() {
 
     const moodLabel = MOOD_LABELS[photo.mood] || "安静";
     card.innerHTML = `
-      <img src="${escapeHtml(photo.src)}" alt="${escapeHtml(photo.caption || "分享的照片")}" loading="lazy" />
+      <img src="${escapeHtml(resolveSrc(photo.src))}" alt="${escapeHtml(photo.caption || "分享的照片")}" loading="lazy" />
       <figcaption>
         <p class="photo-caption">${escapeHtml(photo.caption || "未留下文字，但照片本身已经说了不少。")}</p>
         <div class="photo-meta">
@@ -177,7 +169,7 @@ function renderGallery() {
 }
 
 function openLightbox(photo) {
-  lightboxImage.src = photo.src;
+  lightboxImage.src = resolveSrc(photo.src);
   lightboxImage.alt = photo.caption || "照片";
   lightboxCaption.textContent = photo.caption || "未留下文字。";
   lightboxMeta.textContent = `${MOOD_LABELS[photo.mood] || "安静"}　${photo.author || "匿名 INFJ"}`;
@@ -210,6 +202,7 @@ function closeUploadDialog() {
 
 function resetForm() {
   uploadForm.reset();
+  pendingFile = null;
   pendingPhotoDataUrl = "";
   photoPreview.hidden = true;
   photoPreview.removeAttribute("src");
@@ -254,6 +247,7 @@ async function handleFile(file) {
 
   try {
     const dataUrl = await readFileAsDataUrl(file);
+    pendingFile = file;
     setPreview(dataUrl);
   } catch {
     formError.hidden = false;
@@ -267,13 +261,13 @@ function showToast(message) {
   window.clearTimeout(showToast._timer);
   showToast._timer = window.setTimeout(() => {
     toast.hidden = true;
-  }, 3200);
+  }, 3600);
 }
 
-function submitPhoto(event) {
+async function submitPhoto(event) {
   event.preventDefault();
 
-  if (!pendingPhotoDataUrl) {
+  if (!pendingFile && !pendingPhotoDataUrl) {
     formError.hidden = false;
     formError.textContent = "先选一张照片吧。";
     dropzone.focus();
@@ -285,28 +279,50 @@ function submitPhoto(event) {
   const mood =
     uploadForm.querySelector('input[name="mood"]:checked')?.value || "quiet";
 
-  const photo = {
-    id: `user-${Date.now()}`,
-    src: pendingPhotoDataUrl,
-    caption: caption || "未留下文字，但照片本身已经说了不少。",
-    mood,
-    author: name,
-    createdAt: Date.now(),
-  };
-
-  const next = [photo, ...loadUserPhotos()];
-  if (!saveUserPhotos(next)) {
-    return;
+  const form = new FormData();
+  if (pendingFile) {
+    form.append("photo", pendingFile, pendingFile.name || "photo.jpg");
+  } else {
+    // fallback: convert data URL to blob
+    const blob = await (await fetch(pendingPhotoDataUrl)).blob();
+    form.append("photo", blob, "photo.jpg");
   }
+  form.append("caption", caption || "");
+  form.append("author", name);
+  form.append("mood", mood);
 
-  activeMood = "all";
-  document.querySelectorAll(".mood-chip").forEach((chip) => {
-    chip.classList.toggle("is-active", chip.dataset.mood === "all");
-  });
-  renderGallery();
-  closeUploadDialog();
-  showToast("已放进收藏馆。谢谢你留下这一帧。");
-  document.getElementById("gallery").scrollIntoView({ behavior: "smooth" });
+  const submitBtn = uploadForm.querySelector('button[type="submit"]');
+  const originalLabel = submitBtn.textContent;
+  submitBtn.disabled = true;
+  submitBtn.textContent = "正在放进收藏馆…";
+
+  try {
+    const res = await fetch("api/upload", {
+      method: "POST",
+      body: form,
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.ok) {
+      throw new Error(data.error || "上传失败");
+    }
+
+    activeMood = "all";
+    document.querySelectorAll(".mood-chip").forEach((chip) => {
+      chip.classList.toggle("is-active", chip.dataset.mood === "all");
+    });
+
+    await loadSharedPhotos();
+    renderGallery();
+    closeUploadDialog();
+    showToast("已放进共享收藏馆。所有人都能看到这一帧了。");
+    document.getElementById("gallery").scrollIntoView({ behavior: "smooth" });
+  } catch (err) {
+    formError.hidden = false;
+    formError.textContent = err?.message || "上传没有成功，请稍后再试。";
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalLabel;
+  }
 }
 
 function bindEvents() {
@@ -386,5 +402,10 @@ function bindEvents() {
   });
 }
 
-bindEvents();
-renderGallery();
+async function init() {
+  bindEvents();
+  await loadSharedPhotos();
+  renderGallery();
+}
+
+init();
